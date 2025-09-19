@@ -1,17 +1,18 @@
-# Source Code Appendix
-## Assignment 1: Roll the Dice
+# Source Code Appendix (Updated)
+## Assignment 1: Roll the Dice - Guaranteed Winner Logic
 
 ### Complete C++ Implementation with Detailed Comments
 
 ```cpp
 /*
  * Programming Fundamentals with C++
- * Assignment 1: Roll the Dice
+ * Assignment 1: Roll the Dice (Updated)
  * Student: soc_kungen
  * Date: September 19, 2025
  * 
  * This program implements a dice game where the user challenges the computer
- * in a best-of-3 rounds competition with comprehensive money management.
+ * with guaranteed winner logic - no ties allowed!
+ * Updated: Game continues until there's a clear winner
  */
 
 #include <iostream>  // For input/output operations
@@ -135,12 +136,13 @@ int depositMoney(int currentBalance) {
 }
 
 /*
- * Function: playDiceGame
- * Purpose: Execute main game logic for best-of-3 rounds
+ * Function: playDiceGame (UPDATED)
+ * Purpose: Execute main game logic until there's a clear winner
  * Parameters: bet - amount of money bet on this game
- * Returns: Money result (0 for loss, bet for tie, bet*2 for win)
+ * Returns: Money result (0 for loss, bet*2 for win) - no ties allowed
  * Uses iteration building block for game rounds
  * Uses logical operators for complex conditions
+ * MAJOR UPDATE: Continues rounds until there's a definitive winner
  */
 int playDiceGame(int bet) {
     int userWins = 0;
@@ -148,12 +150,12 @@ int playDiceGame(int bet) {
     int round = 1;
     
     cout << "\n=== Starting New Dice Game ===" << endl;
-    cout << "Best of 3 rounds wins the game!" << endl;
+    cout << "Game continues until there's a clear winner!" << endl;
     cout << "Your bet: " << bet << " SEK" << endl;
     
-    // Main game loop - iteration building block with complex conditions
-    // Continue while neither player has 2 wins AND haven't exceeded 3 rounds
-    while ((userWins < 2) && (computerWins < 2) && (round <= 3)) {
+    // UPDATED: Main game loop - iteration building block with guaranteed winner logic
+    // Continue until someone has more wins than the other (no ties allowed)
+    while (userWins == computerWins) {
         cout << "\n--- Round " << round << " ---" << endl;
         cout << "Press Enter to roll the dice...";
         cin.ignore(); // Clear input buffer
@@ -171,15 +173,19 @@ int playDiceGame(int bet) {
         } else if (winner == 2) {
             computerWins++;
         }
-        // If tie (winner == 0), no one gets a point
+        // If tie (winner == 0), no one gets a point - continue playing
         
         round++;
         
-        // Check if game should end early (best of 3 logic)
-        // Using logical operators to check win conditions
-        if ((userWins == 2) || (computerWins == 2)) {
-            cout << "\nGame ended early - someone won 2 rounds!" << endl;
-            break; // Exit the game loop early
+        // Display current score after each round
+        cout << "Current Score - User: " << userWins << ", Computer: " << computerWins << endl;
+        
+        // Check if we have a winner (someone has more wins than the other)
+        if (userWins != computerWins) {
+            cout << "\nGame has a winner after " << (round-1) << " rounds!" << endl;
+            break; // Exit the game loop
+        } else if (round > 3) {
+            cout << "\nGame is tied after 3 rounds. Playing extra rounds until there's a winner!" << endl;
         }
     }
     
@@ -187,32 +193,30 @@ int playDiceGame(int bet) {
     cout << "\n=== FINAL GAME RESULTS ===" << endl;
     cout << "User wins: " << userWins << " rounds" << endl;
     cout << "Computer wins: " << computerWins << " rounds" << endl;
+    cout << "Total rounds played: " << (round-1) << endl;
     
-    // Calculate winnings/losses and return result
+    // Calculate winnings/losses - no ties possible now
     int result = 0;
     if (userWins > computerWins) {
         cout << "*** USER WINS THE GAME! ***" << endl;
         result = bet * 2; // User wins double the bet (user + computer bet)
         cout << "You won " << result << " SEK!" << endl;
-    } else if (computerWins > userWins) {
+    } else {
         cout << "*** COMPUTER WINS THE GAME! ***" << endl;
         result = 0; // User loses the bet (already deducted)
         cout << "You lost your bet of " << bet << " SEK." << endl;
         cout << "Better luck next time!" << endl;
-    } else {
-        cout << "*** THE GAME IS A TIE! ***" << endl;
-        result = bet; // Return the bet on tie
-        cout << "It's a tie! Your bet of " << bet << " SEK is returned." << endl;
     }
     
     return result;
 }
 
 /*
- * Function: main
+ * Function: main (UPDATED)
  * Purpose: Main program function controlling overall flow
  * Uses all building blocks from lecture: sequence, selection, iteration
  * Implements comprehensive money management and game session control
+ * UPDATED: Removed tie handling since ties are no longer possible
  */
 int main() {
     // Initialize random seed as specified in assignment
@@ -270,20 +274,17 @@ int main() {
         // Update balance and winnings based on game result
         balance += gameResult;
         
-        // Process game results and update totals
+        // UPDATED: Process game results (no tie handling needed)
         if (gameResult > bet) {
             // User won - calculate and display prize information
             int prize = gameResult - bet;
             totalWinnings += prize;
             cout << "\nCurrent prize: " << prize << " SEK" << endl;
             cout << "Total winnings: " << totalWinnings << " SEK" << endl;
-        } else if (gameResult == 0) {
-            // User lost - display consolation message
+        } else {
+            // User lost (no ties possible with new logic)
             cout << "\nConsolation message: Don't give up! Try again!" << endl;
             cout << "Total winnings remaining: " << totalWinnings << " SEK" << endl;
-        } else {
-            // Tie - bet returned, display neutral message
-            cout << "\nYour balance has been restored." << endl;
         }
         
         cout << "\nNew balance: " << balance << " SEK" << endl;
@@ -308,29 +309,44 @@ int main() {
 }
 ```
 
-### Building Blocks Implementation Summary
+### Updated Building Blocks Implementation Summary
 
 1. **Sequence Building Block**: Used throughout for sequential execution of statements, particularly in dice rolling and money calculations.
 
 2. **Selection Building Block**: Implemented using if/else statements for:
    - Round winner determination
    - Bet amount validation
-   - Game result processing
+   - Game result processing (simplified - no tie handling)
    - User choice handling
 
-3. **Iteration Building Block**: Implemented using while loops for:
-   - Main program loop (game sessions)
-   - Game rounds loop (best-of-3)
-   - Input validation loops
+3. **🆕 Modified Iteration Building Block**: Key change implemented using while loops:
+   - **Old**: `while ((userWins < 2) && (computerWins < 2) && (round <= 3))`
+   - **🆕 New**: `while (userWins == computerWins)` - continues until winner is clear
 
-4. **Logical Operators**: Used && and || operators for complex conditions like game termination and input validation.
+4. **Logical Operators**: Used && and || operators for complex conditions like deposit validation and winner determination.
 
 5. **Random Number Generation**: Properly implemented using the specified assignment requirements with srand(time(0)) and rand() % 6 + 1.
 
+### Key Changes in Updated Version
+
+#### **Major Logic Changes:**
+- ❌ **Removed**: Best-of-3 round limit
+- ❌ **Removed**: Tie game outcomes  
+- ❌ **Removed**: Bet return on ties
+- ✅ **Added**: Guaranteed winner logic
+- ✅ **Added**: Extra rounds until clear winner
+- ✅ **Added**: Round count tracking
+
+#### **Updated Game Flow:**
+1. **Play rounds until `userWins != computerWins`**
+2. **No tie outcomes possible**
+3. **Clear winner determination**
+4. **Simplified result processing**
+
 ### Code Quality Features
 
-- **Comprehensive Comments**: Every function and major code block includes detailed explanations
-- **Modular Design**: Code is organized into logical functions for maintainability
+- **Comprehensive Comments**: Every function and major code block includes detailed explanations of the updates
+- **Modular Design**: Code remains organized into logical functions for maintainability
 - **Input Validation**: All user inputs are validated with appropriate error handling
-- **Clear Output**: User-friendly messages and formatting throughout the program
-- **Building Block Integration**: Proper use of all required C++ constructs from Lecture 4
+- **Clear Output**: Enhanced user-friendly messages showing round progress and winner determination
+- **Building Block Integration**: Proper use of all required C++ constructs from Lecture 4 with updated logic

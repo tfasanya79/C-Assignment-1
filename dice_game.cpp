@@ -93,11 +93,12 @@ int playDiceGame(int bet) {
     int round = 1;
     
     cout << "\n=== Starting New Dice Game ===" << endl;
-    cout << "Best of 3 rounds wins the game!" << endl;
+    cout << "Game continues until there's a clear winner!" << endl;
     cout << "Your bet: " << bet << " SEK" << endl;
     
-    // Main game loop - iteration building block
-    while ((userWins < 2) && (computerWins < 2) && (round <= 3)) {
+    // Main game loop - iteration building block with guaranteed winner logic
+    // Continue until someone has more wins than the other (no ties allowed)
+    while (userWins == computerWins) {
         cout << "\n--- Round " << round << " ---" << endl;
         cout << "Press Enter to roll the dice...";
         cin.ignore();
@@ -115,14 +116,19 @@ int playDiceGame(int bet) {
         } else if (winner == 2) {
             computerWins++;
         }
-        // If tie (winner == 0), no one gets a point
+        // If tie (winner == 0), no one gets a point - continue playing
         
         round++;
         
-        // Check if game should end early (best of 3 logic)
-        if ((userWins == 2) || (computerWins == 2)) {
-            cout << "\nGame ended early - someone won 2 rounds!" << endl;
+        // Display current score after each round
+        cout << "Current Score - User: " << userWins << ", Computer: " << computerWins << endl;
+        
+        // Check if we have a winner (someone has more wins than the other)
+        if (userWins != computerWins) {
+            cout << "\nGame has a winner after " << (round-1) << " rounds!" << endl;
             break;
+        } else if (round > 3) {
+            cout << "\nGame is tied after 3 rounds. Playing extra rounds until there's a winner!" << endl;
         }
     }
     
@@ -130,22 +136,19 @@ int playDiceGame(int bet) {
     cout << "\n=== FINAL GAME RESULTS ===" << endl;
     cout << "User wins: " << userWins << " rounds" << endl;
     cout << "Computer wins: " << computerWins << " rounds" << endl;
+    cout << "Total rounds played: " << (round-1) << endl;
     
-    // Calculate winnings/losses
+    // Calculate winnings/losses - no ties possible now
     int result = 0;
     if (userWins > computerWins) {
         cout << "*** USER WINS THE GAME! ***" << endl;
         result = bet * 2; // User wins double the bet (user's bet + computer's bet)
         cout << "You won " << result << " SEK!" << endl;
-    } else if (computerWins > userWins) {
+    } else {
         cout << "*** COMPUTER WINS THE GAME! ***" << endl;
         result = 0; // User loses the bet (already deducted)
         cout << "You lost your bet of " << bet << " SEK." << endl;
         cout << "Better luck next time!" << endl;
-    } else {
-        cout << "*** THE GAME IS A TIE! ***" << endl;
-        result = bet; // Return the bet on tie
-        cout << "It's a tie! Your bet of " << bet << " SEK is returned." << endl;
     }
     
     return result;
@@ -209,13 +212,10 @@ int main() {
             totalWinnings += prize;
             cout << "\nCurrent prize: " << prize << " SEK" << endl;
             cout << "Total winnings: " << totalWinnings << " SEK" << endl;
-        } else if (gameResult == 0) {
-            // User lost
+        } else {
+            // User lost (no ties possible with new logic)
             cout << "\nConsolation message: Don't give up! Try again!" << endl;
             cout << "Total winnings remaining: " << totalWinnings << " SEK" << endl;
-        } else {
-            // Tie - bet returned
-            cout << "\nYour balance has been restored." << endl;
         }
         
         cout << "\nNew balance: " << balance << " SEK" << endl;

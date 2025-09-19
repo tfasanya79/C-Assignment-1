@@ -1,11 +1,11 @@
 # Programming Fundamentals with C++
-## Assignment 1: Roll the Dice
+## Assignment 1: Roll the Dice (Updated)
 ### Laboratory Report
 
 ---
 
 **Course:** Programming Fundamentals with C++  
-**Assignment:** Assignment 1 - Roll the Dice  
+**Assignment:** Assignment 1 - Roll the Dice (Updated with Guaranteed Winner Logic)  
 **Student Username:** soc_kungen  
 **Date:** September 19, 2025  
 **Pages:** 7
@@ -14,11 +14,13 @@
 
 ## 1. Problem Description
 
-The assignment required developing a C++ program implementing a dice game where a user challenges the computer in a best-of-three rounds competition. Each player rolls two dice per round, and the highest sum wins the round. The program must include a comprehensive betting system with money management capabilities.
+The assignment required developing a C++ program implementing a dice game where a user challenges the computer. Each player rolls two dice per round, and the highest sum wins the round. The program must include a comprehensive betting system with money management capabilities.
+
+**🆕 UPDATE**: The program has been amended to ensure there is always a clear winner by continuing rounds until someone has more wins than the other, eliminating tie games.
 
 ### Core Requirements
 - User vs Computer dice game with 2 dice per player per round
-- Best of 3 rounds with early termination when someone wins 2 rounds
+- **🆕 UPDATED**: Continue rounds until there's a clear winner (no ties)
 - Betting system with three fixed options: 100 SEK, 300 SEK, or 500 SEK
 - Money management with deposits up to 5,000 SEK per transaction
 - Clear reporting of dice rolls, round winners, and game outcomes
@@ -33,19 +35,22 @@ During the implementation process, several hidden assumptions and requirements w
 ### 2.1 Identified Hidden Requirements
 1. **Input Validation**: The assignment didn't specify handling invalid user inputs, so comprehensive validation was implemented for bet choices and deposit amounts.
 
-2. **Tie Handling**: The assignment didn't specify what happens when dice rolls are equal. I implemented a tie system where no points are awarded and the round is replayed conceptually.
+2. **🆕 Tie Elimination**: **UPDATED REQUIREMENT** - The game now continues until there's a definitive winner, ensuring no tie outcomes.
 
-3. **Money Return on Ties**: When a complete game ends in a tie (equal round wins), I decided to return the user's bet rather than losing it.
+3. **🆕 Extra Rounds Logic**: When the game is tied after 3 rounds, additional rounds are played until someone has more wins.
 
-4. **Session Management**: The program needed to track money across multiple games within a single session, requiring persistent balance tracking.
+4. **Money Return on Ties**: **REMOVED** - Since ties are no longer possible, this logic has been eliminated.
 
-5. **Early Game Termination**: While mentioned, the specific implementation of stopping at 2 wins required careful logic to avoid unnecessary rounds.
+5. **Session Management**: The program tracks money across multiple games within a single session, requiring persistent balance tracking.
+
+6. **Round Counting**: **NEW** - The program now tracks and displays the total number of rounds played to reach a winner.
 
 ### 2.2 Design Decisions
-1. **Win Calculation**: User wins double their bet (user's bet + computer's equivalent bet)
-2. **Loss Handling**: User loses their bet (already deducted before game starts)
-3. **Balance Management**: Money is deducted before the game to simulate real betting
-4. **User Experience**: Clear prompts and confirmations for all major actions
+1. **🆕 Win Condition**: Game continues until `userWins != computerWins`
+2. **Win Calculation**: User wins double their bet (user's bet + computer's equivalent bet)
+3. **Loss Handling**: User loses their bet (already deducted before game starts)
+4. **🆕 No Tie Outcomes**: Simplified logic with only win/lose scenarios
+5. **User Experience**: Clear prompts and confirmations for all major actions
 
 ## 3. Solution Approach and Implementation Strategy
 
@@ -53,7 +58,7 @@ During the implementation process, several hidden assumptions and requirements w
 The solution was structured using modular functions following the building blocks from Lecture 4:
 
 1. **Main Program Loop**: Controls overall program flow and session management
-2. **Game Logic Module**: Handles individual game execution and round management
+2. **🆕 Updated Game Logic Module**: Handles individual game execution with guaranteed winner logic
 3. **Dice Rolling Function**: Implements random number generation for dice
 4. **Money Management Functions**: Handle deposits, betting, and balance tracking
 5. **User Interface Functions**: Provide clear output and input handling
@@ -83,13 +88,19 @@ if (userRoll > computerRoll) {
 ```
 Clear decision-making structure for determining round winners.
 
-#### Iteration Building Block
+#### 🆕 Updated Iteration Building Block
 ```cpp
+// OLD LOGIC:
 while ((userWins < 2) && (computerWins < 2) && (round <= 3)) {
     // Round execution logic
 }
+
+// NEW LOGIC:
+while (userWins == computerWins) {
+    // Continue until there's a clear winner
+}
 ```
-Efficient loop control implementing best-of-3 logic with early termination.
+**MAJOR UPDATE**: Efficient loop control implementing guaranteed winner logic.
 
 ### 3.3 Random Number Implementation
 Following the assignment specifications:
@@ -106,50 +117,53 @@ rand() % 6 + 1;  // Dice value generation (1-6)
 2. **Session Loop**: Continuous game sessions until user exits
 3. **Money Check**: Balance verification and deposit handling
 4. **Betting Phase**: Bet selection and validation
-5. **Game Execution**: Best-of-3 rounds with proper termination
-6. **Result Processing**: Win/loss calculation and balance updates
+5. **🆕 Game Execution**: Continue rounds until clear winner emerges
+6. **🆕 Result Processing**: Win/loss calculation (no ties)
 7. **Session Control**: Continue/exit decision
 
-### 4.2 Game Logic Implementation
-The best-of-3 implementation ensures:
-- No unnecessary rounds are played
+### 4.2 🆕 Updated Game Logic Implementation
+The guaranteed winner implementation ensures:
+- Rounds continue until `userWins != computerWins`
+- No tie games possible
+- Proper score tracking with round counting
 - Clear winner determination
-- Proper score tracking
-- Early termination when someone reaches 2 wins
 
 ### 4.3 Money Management System
 - **Deposit Limit**: Maximum 5,000 SEK per deposit
 - **Bet Validation**: Ensures sufficient balance before game starts
 - **Balance Tracking**: Persistent across multiple games
-- **Winnings Calculation**: Proper prize distribution and total tracking
+- **🆕 Simplified Winnings**: Only win/lose outcomes (no tie returns)
 
 ## 5. Strengths and Weaknesses Analysis
 
 ### 5.1 Strengths
-1. **Comprehensive Input Validation**: All user inputs are validated with appropriate error messages
-2. **Clear User Interface**: Well-structured output with informative messages
-3. **Modular Design**: Functions are well-separated and reusable
-4. **Robust Money Management**: Handles edge cases like insufficient funds
-5. **Proper Random Generation**: Correctly seeded and distributed dice rolls
-6. **Early Termination Logic**: Efficiently implements best-of-3 without unnecessary rounds
-7. **Session Persistence**: Money and winnings track across multiple games
-8. **Comprehensive Comments**: Code is well-documented for maintainability
+1. **🆕 Guaranteed Winner**: Eliminates frustrating tie outcomes
+2. **Comprehensive Input Validation**: All user inputs are validated with appropriate error messages
+3. **Clear User Interface**: Well-structured output with informative messages
+4. **Modular Design**: Functions are well-separated and reusable
+5. **Robust Money Management**: Handles edge cases like insufficient funds
+6. **Proper Random Generation**: Correctly seeded and distributed dice rolls
+7. **🆕 Flexible Round System**: Adapts to continue until winner emerges
+8. **Session Persistence**: Money and winnings track across multiple games
+9. **Comprehensive Comments**: Code is well-documented for maintainability
 
 ### 5.2 Weaknesses
-1. **Limited Error Recovery**: Some input errors require program restart
-2. **No Save/Load Functionality**: Session data is lost when program exits
-3. **Fixed Bet Options**: Only three predetermined betting amounts
-4. **No Game Statistics**: Doesn't track long-term player performance
-5. **Console-Only Interface**: Limited to text-based interaction
-6. **No Multiplayer Support**: Only single-player vs computer
+1. **🆕 Potentially Long Games**: Some games might require many rounds
+2. **Limited Error Recovery**: Some input errors require program restart
+3. **No Save/Load Functionality**: Session data is lost when program exits
+4. **Fixed Bet Options**: Only three predetermined betting amounts
+5. **No Game Statistics**: Doesn't track long-term player performance
+6. **Console-Only Interface**: Limited to text-based interaction
+7. **No Multiplayer Support**: Only single-player vs computer
 
 ### 5.3 Potential Improvements
-1. Implement file-based session persistence
-2. Add configurable bet amounts
-3. Include detailed game statistics and history
-4. Implement difficulty levels for computer opponent
-5. Add graphical user interface
-6. Include sound effects and animations
+1. **🆕 Maximum Round Limit**: Add optional limit to prevent excessively long games
+2. Implement file-based session persistence
+3. Add configurable bet amounts
+4. Include detailed game statistics and history
+5. Implement difficulty levels for computer opponent
+6. Add graphical user interface
+7. Include sound effects and animations
 
 ## 6. Testing and Validation
 
@@ -158,26 +172,27 @@ The best-of-3 implementation ensures:
 - Invalid bet inputs (out of range, non-numeric)
 - Insufficient balance scenarios
 - Maximum deposit limit testing (5,000 SEK)
-- Win/loss/tie game outcomes
+- **🆕 Extended round scenarios** (games requiring multiple extra rounds)
+- **🆕 Winner determination** (various win patterns)
 - Multiple consecutive games
-- Early game termination (2-0, 2-1 scenarios)
 - Balance tracking across sessions
 
-### 6.2 Validation Results
+### 6.2 🆕 Updated Validation Results
 All test scenarios passed successfully, confirming:
 - Proper money management
-- Correct game logic implementation
+- **🆕 Guaranteed winner logic** works correctly
 - Appropriate user feedback
 - Robust error handling
+- **🆕 No tie games occur**
 
 ## 7. Conclusion
 
-The dice game implementation successfully meets all specified requirements while addressing numerous hidden assumptions through thoughtful design decisions. The program demonstrates effective use of C++ building blocks from Lecture 4, including proper sequence, selection, and iteration constructs.
+The dice game implementation successfully meets all specified requirements while addressing the important enhancement of guaranteed winner logic. The **major update eliminates tie games** by continuing rounds until there's a clear winner, providing a more satisfying gaming experience.
 
-The modular architecture ensures code maintainability and extensibility, while comprehensive input validation and user feedback create a robust user experience. The money management system properly handles real-world betting scenarios with appropriate safeguards.
+The program demonstrates effective use of C++ building blocks from Lecture 4, with the **key modification being the updated iteration logic** that ensures definitive outcomes. The modular architecture ensures code maintainability and extensibility, while comprehensive input validation and user feedback create a robust user experience.
 
-Future enhancements could focus on persistence features, enhanced user interface options, and expanded game statistics to create an even more engaging gaming experience.
+The **guaranteed winner feature** addresses a potential frustration point in the original design while maintaining all the core functionality and money management capabilities. Future enhancements could focus on balancing game length with the certainty of outcomes.
 
 ---
 
-*This report demonstrates the complete solution approach, implementation details, and critical analysis required for Assignment 1.*
+*This updated report demonstrates the enhanced solution approach, implementation details, and critical analysis for the amended Assignment 1 with guaranteed winner logic.*
