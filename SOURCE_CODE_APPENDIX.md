@@ -1,18 +1,17 @@
-# Source Code Appendix (Updated)
-## Assignment 1: Roll the Dice - Guaranteed Winner Logic
+# Source Code Appendix
+## Assignment 1: Roll the Dice - Best of 3 Implementation
 
 ### Complete C++ Implementation with Detailed Comments
 
 ```cpp
 /*
  * Programming Fundamentals with C++
- * Assignment 1: Roll the Dice (Updated)
+ * Assignment 1: Roll the Dice
  * Student: soc_kungen
  * Date: September 19, 2025
  * 
  * This program implements a dice game where the user challenges the computer
- * with guaranteed winner logic - no ties allowed!
- * Updated: Game continues until there's a clear winner
+ * in a best-of-3 rounds competition with early termination
  */
 
 #include <iostream>  // For input/output operations
@@ -48,6 +47,7 @@ void displayDiceRoll(const string& player, int roll) {
  *            computerRoll - computer's dice roll result
  *            round - current round number for display
  * Returns: 1 if user wins, 2 if computer wins, 0 if tie
+ */
  * Uses selection building block (if/else) from lecture
  */
 int determineRoundWinner(int userRoll, int computerRoll, int round) {
@@ -136,13 +136,13 @@ int depositMoney(int currentBalance) {
 }
 
 /*
- * Function: playDiceGame (UPDATED)
- * Purpose: Execute main game logic until there's a clear winner
+ * Function: playDiceGame
+ * Purpose: Execute main game logic using best-of-3 with early termination
  * Parameters: bet - amount of money bet on this game
- * Returns: Money result (0 for loss, bet*2 for win) - no ties allowed
+ * Returns: Money result (0 for loss, bet*2 for win, bet for tie)
  * Uses iteration building block for game rounds
  * Uses logical operators for complex conditions
- * MAJOR UPDATE: Continues rounds until there's a definitive winner
+ * Implements best-of-3 logic with early termination when someone reaches 2 wins
  */
 int playDiceGame(int bet) {
     int userWins = 0;
@@ -150,12 +150,12 @@ int playDiceGame(int bet) {
     int round = 1;
     
     cout << "\n=== Starting New Dice Game ===" << endl;
-    cout << "Game continues until there's a clear winner!" << endl;
+    cout << "Best of 3 rounds - first to win 2 rounds wins the game!" << endl;
     cout << "Your bet: " << bet << " SEK" << endl;
     
-    // UPDATED: Main game loop - iteration building block with guaranteed winner logic
-    // Continue until someone has more wins than the other (no ties allowed)
-    while (userWins == computerWins) {
+    // Main game loop - iteration building block implementing best-of-3 logic
+    // Continue while no one has won 2 rounds and we haven't exceeded 3 rounds
+    while ((userWins < 2) && (computerWins < 2) && (round <= 3)) {
         cout << "\n--- Round " << round << " ---" << endl;
         cout << "Press Enter to roll the dice...";
         cin.ignore(); // Clear input buffer
@@ -173,19 +173,17 @@ int playDiceGame(int bet) {
         } else if (winner == 2) {
             computerWins++;
         }
-        // If tie (winner == 0), no one gets a point - continue playing
+        // If tie (winner == 0), no one gets a point - continue to next round
         
         round++;
         
         // Display current score after each round
         cout << "Current Score - User: " << userWins << ", Computer: " << computerWins << endl;
         
-        // Check if we have a winner (someone has more wins than the other)
-        if (userWins != computerWins) {
-            cout << "\nGame has a winner after " << (round-1) << " rounds!" << endl;
+        // Check for early termination - if someone has 2 wins, game over
+        if (userWins == 2 || computerWins == 2) {
+            cout << "\nGame over! Someone reached 2 wins!" << endl;
             break; // Exit the game loop
-        } else if (round > 3) {
-            cout << "\nGame is tied after 3 rounds. Playing extra rounds until there's a winner!" << endl;
         }
     }
     
@@ -195,9 +193,23 @@ int playDiceGame(int bet) {
     cout << "Computer wins: " << computerWins << " rounds" << endl;
     cout << "Total rounds played: " << (round-1) << endl;
     
-    // Calculate winnings/losses - no ties possible now
+    // Determine final winner using best-of-3 logic
     int result = 0;
     if (userWins > computerWins) {
+        cout << "*** USER WINS THE GAME! ***" << endl;
+        result = bet * 2; // User wins double the bet (user's bet + computer's bet)
+        cout << "You won " << result << " SEK!" << endl;
+    } else if (computerWins > userWins) {
+        cout << "*** COMPUTER WINS THE GAME! ***" << endl;
+        result = 0; // User loses the bet (already deducted)
+        cout << "You lost your bet of " << bet << " SEK." << endl;
+        cout << "Better luck next time!" << endl;
+    } else {
+        // This should theoretically never happen in best-of-3, but handle ties
+        cout << "*** GAME IS A TIE! ***" << endl;
+        result = bet; // Return the user's bet
+        cout << "Your bet of " << bet << " SEK is returned." << endl;
+    }
         cout << "*** USER WINS THE GAME! ***" << endl;
         result = bet * 2; // User wins double the bet (user + computer bet)
         cout << "You won " << result << " SEK!" << endl;
@@ -274,15 +286,19 @@ int main() {
         // Update balance and winnings based on game result
         balance += gameResult;
         
-        // UPDATED: Process game results (no tie handling needed)
+        // Process game results based on outcome
         if (gameResult > bet) {
             // User won - calculate and display prize information
             int prize = gameResult - bet;
             totalWinnings += prize;
             cout << "\nCurrent prize: " << prize << " SEK" << endl;
             cout << "Total winnings: " << totalWinnings << " SEK" << endl;
+        } else if (gameResult == bet) {
+            // Game was a tie - bet returned
+            cout << "\nGame ended in a tie - your bet has been returned." << endl;
+            cout << "Total winnings: " << totalWinnings << " SEK" << endl;
         } else {
-            // User lost (no ties possible with new logic)
+            // User lost
             cout << "\nConsolation message: Don't give up! Try again!" << endl;
             cout << "Total winnings remaining: " << totalWinnings << " SEK" << endl;
         }
@@ -309,35 +325,44 @@ int main() {
 }
 ```
 
-### Updated Building Blocks Implementation Summary
+### Building Blocks Implementation Summary
 
 1. **Sequence Building Block**: Used throughout for sequential execution of statements, particularly in dice rolling and money calculations.
 
 2. **Selection Building Block**: Implemented using if/else statements for:
    - Round winner determination
    - Bet amount validation
-   - Game result processing (simplified - no tie handling)
+   - Game result processing (win/lose/tie outcomes)
    - User choice handling
 
-3. **🆕 Modified Iteration Building Block**: Key change implemented using while loops:
-   - **Old**: `while ((userWins < 2) && (computerWins < 2) && (round <= 3))`
-   - **🆕 New**: `while (userWins == computerWins)` - continues until winner is clear
+3. **Iteration Building Block**: Implemented using while loops for:
+   - **Game Loop**: `while ((userWins < 2) && (computerWins < 2) && (round <= 3))`
+   - **Input Validation**: Loops for bet selection and deposit amounts
+   - **Session Management**: Main program loop for multiple games
 
-4. **Logical Operators**: Used && and || operators for complex conditions like deposit validation and winner determination.
+4. **Logical Operators**: Used && and || operators for complex conditions like:
+   - Game loop control with multiple conditions
+   - Deposit validation (amount > 0 AND amount <= 5000)
+   - Early termination logic (userWins == 2 OR computerWins == 2)
 
 5. **Random Number Generation**: Properly implemented using the specified assignment requirements with srand(time(0)) and rand() % 6 + 1.
 
-### Key Changes in Updated Version
+### Best-of-3 Implementation Features
 
-#### **Major Logic Changes:**
-- ❌ **Removed**: Best-of-3 round limit
-- ❌ **Removed**: Tie game outcomes  
-- ❌ **Removed**: Bet return on ties
-- ✅ **Added**: Guaranteed winner logic
-- ✅ **Added**: Extra rounds until clear winner
-- ✅ **Added**: Round count tracking
+#### **Key Logic Components:**
+- ✅ **Best-of-3 Rounds**: Maximum 3 rounds per game
+- ✅ **Early Termination**: Game ends when someone reaches 2 wins
+- ✅ **Round Tie Handling**: Tied rounds award no points, continue to next round
+- ✅ **Complete Game Ties**: Rare scenario (1-1 with round 3 tie) returns user's bet
+- ✅ **Proper Scoring**: Clear win/lose determination with fair money handling
 
-#### **Updated Game Flow:**
+#### **Assignment Requirements Met:**
+- ✅ Three rounds maximum with early termination
+- ✅ "Best of three rounds applies" - first to 2 wins
+- ✅ "If someone wins two rounds in a row, the third round does not need to be played"
+- ✅ All building blocks from Lecture 4 properly implemented
+- ✅ Random number generation as specified
+- ✅ Money management with deposit limits and betting system
 1. **Play rounds until `userWins != computerWins`**
 2. **No tie outcomes possible**
 3. **Clear winner determination**

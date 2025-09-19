@@ -1,114 +1,157 @@
-# Dice Game Flowchart (Updated)
+# Dice Game Program Flowchart
 
-## Program Flow Diagram - Guaranteed Winner Logic
+## Program Flow Diagram
 
 ```
-                    START
-                      |
-                      v
-            [Initialize random seed]
-              srand(time(0))
-                      |
-                      v
-            [Display welcome message]
-                      |
-                      v
-               [Set balance = 0]
-            [Set totalWinnings = 0]
-                      |
-                      v
-                 ┌─────────┐
-                 │ MAIN    │
-                 │ LOOP    │<──────────┐
-                 └─────────┘           │
-                      |                │
-                      v                │
-              [Check balance > 0]      │
-                   /     \             │
-                  NO     YES           │
-                  |       |            │
-                  v       v            │
-            [Deposit money]  [Display balance]
-            (Max 5000 SEK)       |     │
-                  |              v     │
-                  └──────>[Get bet amount]
-                              |        │
-                              v        │
-                     [Validate bet ≤ balance]
-                           /     \     │
-                          NO     YES   │
-                          |       |    │
-                          v       v    │
-                  [Ask for more  [Deduct bet]
-                   deposit]       |    │
-                       |          v    │
-                       └─────>[PLAY GAME]
-                                  |    │
-                                  v    │
-                           ┌─────────┐ │
-                           │ GAME    │ │
-                           │ LOGIC   │ │
-                           └─────────┘ │
-                                  |    │
-                                  v    │
-                        [Initialize round = 1]
-                        [userWins = 0]   │
-                        [computerWins = 0]
-                                  |    │
-                                  v    │
-                            ┌─────────┐│
-                            │ ROUND   ││
-                            │ LOOP    ││<──┐
-                            └─────────┘│   │
-                                  |    │   │
-                                  v    │   │
-                          [Roll user dice]  │
-                          [Roll computer dice]
-                                  |    │   │
-                                  v    │   │
-                        [Compare dice rolls]│
-                             /  |  \   │   │
-                           User Tie Computer
-                           wins |  wins │   │
-                            |   |   |  │   │
-                            v   v   v  │   │
-                        [Update wins] │   │
-                            |   |   |  │   │
-                            v   v   v  │   │
-                     [Check: userWins == computerWins?]
-                             /         \   │   │
-                           YES          NO │   │
-                            |            | │   │
-                            v            v │   │
-                    [Continue round]  [Game has winner!]
-                    [round++]           |  │   │
-                            |           v  │   │
-                            └───────>[End game]
-                                       |   │   │
-                                       v   │   │
-                               [Calculate result]
-                               (Win/Lose only)  │
-                                       |       │
-                                       v       │
-                               [Update balance] │
-                               [Update winnings]│
-                                       |       │
-                                       v       │
-                               [Display results]│
-                                       |       │
-                                       v       │
-                               [Ask play again?]│
-                                    /    \     │
-                                  YES    NO    │
-                                   |      |    │
-                                   └──────┘    │
-                                          |    │
-                                          v    │
-                                 [Display final results]
-                                          |
-                                          v
-                                        END
+                    [START]
+                       |
+                   Initialize
+                  (Seed random,
+                   balance = 0,
+                totalWinnings = 0)
+                       |
+                       v
+                ┌─── Balance > 0? ───┐
+                │                    │
+             NO │                    │ YES
+                │                    │
+                v                    v
+         [Deposit Money]          [Choose Bet]
+         (Max 5000 SEK)          (100/300/500 SEK)
+                │                    │
+                └──────┬─────────────┘
+                       v
+                 Sufficient Funds?
+                       │
+                   NO  │  YES
+                ┌──────┴──────┐
+                │             │
+                v             v
+          [Error Message]  [Deduct Bet]
+          (Try again)     (From balance)
+                │             │
+                └─────────────┘
+                       │
+                       v
+                 [Initialize Game]
+                (userWins = 0,
+                computerWins = 0,
+                 round = 1)
+                       │
+                       v
+            ┌─── GAME LOOP ────┐
+            │                  │
+            │  (userWins < 2)  │
+            │       AND        │ 
+            │ (computerWins<2) │
+            │       AND        │
+            │   (round <= 3)   │
+            │                  │
+            └──── YES ─────────┘
+                       │
+                       v
+                 [Roll Dice]
+               (User & Computer
+                each roll 2 dice)
+                       │
+                       v
+               [Compare Dice Sums]
+                       │
+            ┌──────────┼──────────┐
+            │          │          │
+     User > Computer   │   Computer > User
+            │          │          │
+            v          v          v
+      [User Wins]  [Tie Round]  [Computer Wins]
+      (userWins++) (No points)  (computerWins++)
+            │          │          │
+            └──────────┼──────────┘
+                       │
+                       v
+                [Round = Round + 1]
+                       │
+                       v
+              [Display Current Score]
+                       │
+                       v
+            ┌─── Check Early Win ───┐
+            │                       │
+            │  userWins == 2  OR    │
+            │  computerWins == 2    │
+            │                       │
+            └──── YES ──────────────┘
+                       │
+                       v
+                [End Game Loop]
+                       │
+                       v
+              ┌─ Determine Winner ─┐
+              │                    │
+       userWins > computerWins?    │
+              │                    │
+        YES   │                    │ NO
+              │                    │
+              v                    v
+        [USER WINS!]         [Check Tie]
+        (Win bet × 2)             │
+              │            userWins ==
+              │           computerWins?
+              │                    │
+              │              YES   │   NO
+              │                    │    │
+              │                    v    v
+              │              [GAME TIE] [COMPUTER WINS!]
+              │             (Return bet) (User loses bet)
+              │                    │    │
+              └────────────────────┼────┘
+                                   │
+                                   v
+                          [Display Results]
+                         (Show final score,
+                          rounds played,
+                           money won/lost)
+                                   │
+                                   v
+                            Play Again?
+                                   │
+                             YES   │   NO
+                        ┌──────────┼──────────┐
+                        │                     │
+                        v                     v
+                [Back to Balance Check] [Display Final Stats]
+                                             │
+                                             v
+                                          [END]
 ```
+
+## Key Flowchart Features
+
+### Game Logic Flow
+- **Best-of-3 Implementation**: Loop continues while `(userWins < 2) AND (computerWins < 2) AND (round <= 3)`
+- **Early Termination**: Game ends immediately when someone reaches 2 wins
+- **Round Tie Handling**: Tied rounds award no points, game continues to next round
+- **Complete Game Tie**: Rare scenario (1-1 with round 3 tie) returns user's bet
+
+### Decision Points
+1. **Balance Check**: Ensures user has money to play
+2. **Bet Validation**: Confirms sufficient funds for chosen bet
+3. **Game Loop**: Controls best-of-3 rounds with early termination
+4. **Round Winner**: Determines who wins each individual round
+5. **Early Win Check**: Stops game when someone reaches 2 wins
+6. **Final Winner**: Determines overall game outcome and money flow
+
+### Money Flow
+- **Deposit**: Up to 5,000 SEK per transaction
+- **Bet Deduction**: Money removed before game starts
+- **Win Calculation**: User wins 2× bet amount
+- **Loss Handling**: User loses their bet (already deducted)
+- **Tie Handling**: User's bet is returned
+
+### Building Blocks Used
+- **Sequence**: Linear execution of dice rolling and calculations
+- **Selection**: If/else structures for winner determination
+- **Iteration**: While loops for game sessions and round management
+- **Logical Operators**: Combined conditions for game loop control`
 
 ## Key Changes in Updated Logic
 

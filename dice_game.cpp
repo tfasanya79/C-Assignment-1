@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <ctime>
 using namespace std;
 
@@ -93,12 +93,12 @@ int playDiceGame(int bet) {
     int round = 1;
     
     cout << "\n=== Starting New Dice Game ===" << endl;
-    cout << "Game continues until there's a clear winner!" << endl;
+    cout << "Best of 3 rounds - first to win 2 rounds wins the game!" << endl;
     cout << "Your bet: " << bet << " SEK" << endl;
     
-    // Main game loop - iteration building block with guaranteed winner logic
-    // Continue until someone has more wins than the other (no ties allowed)
-    while (userWins == computerWins) {
+    // Main game loop - iteration building block implementing best-of-3 logic
+    // Continue while no one has won 2 rounds and we haven't exceeded 3 rounds
+    while ((userWins < 2) && (computerWins < 2) && (round <= 3)) {
         cout << "\n--- Round " << round << " ---" << endl;
         cout << "Press Enter to roll the dice...";
         cin.ignore();
@@ -116,19 +116,17 @@ int playDiceGame(int bet) {
         } else if (winner == 2) {
             computerWins++;
         }
-        // If tie (winner == 0), no one gets a point - continue playing
+        // If tie (winner == 0), no one gets a point - continue to next round
         
         round++;
         
         // Display current score after each round
         cout << "Current Score - User: " << userWins << ", Computer: " << computerWins << endl;
         
-        // Check if we have a winner (someone has more wins than the other)
-        if (userWins != computerWins) {
-            cout << "\nGame has a winner after " << (round-1) << " rounds!" << endl;
+        // Check for early termination - if someone has 2 wins, game over
+        if (userWins == 2 || computerWins == 2) {
+            cout << "\nGame over! Someone reached 2 wins!" << endl;
             break;
-        } else if (round > 3) {
-            cout << "\nGame is tied after 3 rounds. Playing extra rounds until there's a winner!" << endl;
         }
     }
     
@@ -138,17 +136,22 @@ int playDiceGame(int bet) {
     cout << "Computer wins: " << computerWins << " rounds" << endl;
     cout << "Total rounds played: " << (round-1) << endl;
     
-    // Calculate winnings/losses - no ties possible now
+    // Determine final winner using best-of-3 logic
     int result = 0;
     if (userWins > computerWins) {
         cout << "*** USER WINS THE GAME! ***" << endl;
         result = bet * 2; // User wins double the bet (user's bet + computer's bet)
         cout << "You won " << result << " SEK!" << endl;
-    } else {
+    } else if (computerWins > userWins) {
         cout << "*** COMPUTER WINS THE GAME! ***" << endl;
         result = 0; // User loses the bet (already deducted)
         cout << "You lost your bet of " << bet << " SEK." << endl;
         cout << "Better luck next time!" << endl;
+    } else {
+        // This should theoretically never happen in best-of-3, but handle ties
+        cout << "*** GAME IS A TIE! ***" << endl;
+        result = bet; // Return the user's bet
+        cout << "Your bet of " << bet << " SEK is returned." << endl;
     }
     
     return result;
