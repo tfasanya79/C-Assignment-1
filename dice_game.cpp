@@ -118,23 +118,23 @@ int playDiceGame(int bet) {
         }
         // If tie (winner == 0), no one gets a point - continue to next round
         
-        round++;
-        
         // Display current score after each round
         cout << "Current Score - User: " << userWins << ", Computer: " << computerWins << endl;
         
-        // Check for early termination - if someone has 2 wins, game over
+        // CRITICAL FIX: Check for early termination BEFORE incrementing round
         if (userWins == 2 || computerWins == 2) {
             cout << "\nGame over! Someone reached 2 wins!" << endl;
-            break;
+            break; // Exit immediately - no more rounds needed
         }
+        
+        round++; // Only increment round if game continues
     }
     
     // Display final game results
     cout << "\n=== FINAL GAME RESULTS ===" << endl;
     cout << "User wins: " << userWins << " rounds" << endl;
     cout << "Computer wins: " << computerWins << " rounds" << endl;
-    cout << "Total rounds played: " << (round-1) << endl;
+    cout << "Total rounds played: " << round << endl;
     
     // Determine final winner using best-of-3 logic
     int result = 0;
@@ -160,7 +160,7 @@ int playDiceGame(int bet) {
 /* Main function using building blocks from lecture */
 int main() {
     // Initialize random seed as specified in assignment
-    srand(time(0));
+    srand(static_cast<unsigned int>(time(0)));
     
     int balance = 0;
     int totalWinnings = 0;
