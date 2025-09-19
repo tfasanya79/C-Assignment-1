@@ -4,16 +4,14 @@
 Successfully implemented a C++ dice game program that meets all the assignment requirements using building blocks from Lecture 4.
 
 ## Assignment Requirements Met
-✅ User vs Computer dice game with 3 rounds  
-✅ Best of 3 rounds logic (early termination when someone wins 2 rounds)  
-✅ Betting system with three options: 100 SEK, 300 SEK, 500 SEK  
-✅ Money management with maximum deposit of 5000 SEK  
+✅ Two-player dice game with best-of-3 format  
+✅ First player to win 2 rounds wins the game  
+✅ Interactive gameplay (players press Enter to roll)  
 ✅ Clear reporting of dice rolls for each round  
 ✅ Round-by-round winner determination  
 ✅ Game winner announcement  
-✅ Prize calculation and total winnings tracking  
-✅ Consolation messages for losses  
-✅ Multiple game sessions support  
+✅ Tie round handling (no points awarded)  
+✅ Game continues until someone wins 2 rounds (no early termination)  
 ✅ Proper random number generation using rand() % 6 + 1 with srand(time(0))  
 
 ## Building Blocks from Lecture 4 Used
@@ -21,13 +19,12 @@ Successfully implemented a C++ dice game program that meets all the assignment r
 ### 1. **Sequence** - Sequential execution
 ```cpp
 int dice1 = rand() % 6 + 1;
-int dice2 = rand() % 6 + 1;
-return dice1 + dice2;
+cout << "Player 1 rolled: " << dice1 << endl;
 ```
 
 ### 2. **Selection** - if/else statements
 ```cpp
-if (userRoll > computerRoll) {
+if (dice1 > dice2) {
     cout << "User wins Round " << round << "!" << endl;
     return 1; // User wins
 } else if (computerRoll > userRoll) {

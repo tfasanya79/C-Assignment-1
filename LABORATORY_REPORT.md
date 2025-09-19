@@ -14,17 +14,16 @@
 
 ## 1. Problem Description
 
-The assignment required developing a C++ program implementing a dice game where a user challenges the computer in a best-of-three rounds competition. Each player rolls two dice per round, and the highest sum wins the round. The program must include a comprehensive betting system with money management capabilities.
+The assignment required developing a C++ program implementing a simple dice game where two players compete in a best-of-three rounds competition. Each player rolls one dice per round, and the player with the higher roll wins the round. The first player to win 2 rounds wins the entire game.
 
 ### Core Requirements
-- User vs Computer dice game with 2 dice per player per round
-- Best of 3 rounds with early termination when someone wins 2 rounds
-- Betting system with three fixed options: 100 SEK, 300 SEK, or 500 SEK
-- Money management with deposits up to 5,000 SEK per transaction
-- Clear reporting of dice rolls, round winners, and game outcomes
-- Prize calculation and total winnings tracking
-- Multiple game sessions support
+- Two-player dice game with 1 dice per player per round
+- Best-of-3 format: first player to win 2 rounds wins the game
+- Interactive gameplay where players press Enter to roll
+- Clear reporting of dice rolls, round winners, and current score
+- Game continues until one player achieves 2 round wins (no early termination at round 3)
 - Random number generation using `rand() % 6 + 1` with proper seeding
+- Handle tie rounds (no points awarded, continue to next round)
 
 ## 2. Hidden Assumptions and Requirements Analysis
 
