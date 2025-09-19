@@ -47,12 +47,28 @@ while ((userWins < 2) && (computerWins < 2) && (round <= 3)) {
 ```cpp
 if ((deposit > 0) && (deposit <= 5000)) {
     validDeposit = true;
+} else {
+    cout << "It's a tie this round!" << endl;
 }
+```
+
+### 3. **Iteration** - while loops
+```cpp
+while (player1_wins < 2 && player2_wins < 2) {
+    // Game round logic
+}
+```
+
+### 4. **Interactive input handling**
+```cpp
+cout << "Player 1, press Enter to roll the dice...";
+cin.get();
 ```
 
 ### 5. **Proper includes and random seeding**
 ```cpp
 #include <iostream>
+#include <cstdlib>
 #include <ctime>
 using namespace std;
 
@@ -62,18 +78,18 @@ srand(time(0));
 
 ### 6. **Clear commenting and documentation**
 ```cpp
-/* Function to roll two dice and return the sum
-   Uses building block from lecture: rand() % 6 + 1 */
+// Generate random 1-6 (from lecture)
+int dice1 = rand() % 6 + 1;
 ```
 
 ## Key Features Implemented
 
-1. **Dice Rolling System**: Each player rolls two dice, sum is compared
-2. **Round Management**: Best of 3 with early termination
-3. **Money System**: Deposit, betting, balance tracking, winnings calculation
-4. **User Interface**: Clear prompts, results display, game status
-5. **Input Validation**: Valid bet amounts, deposit limits
-6. **Game Flow Control**: Multiple sessions, continue/exit options
+1. **Dice Rolling System**: Each player rolls one dice (1-6), highest wins the round
+2. **Best-of-3 Logic**: First player to win 2 rounds wins the game
+3. **Interactive Gameplay**: Players press Enter to roll dice
+4. **Score Tracking**: Running score displayed after each round
+5. **Tie Handling**: Tied rounds award no points, game continues
+6. **Winner Declaration**: Clear game conclusion when someone reaches 2 wins
 
 ## Files Created
 - `dice_game.cpp` - Complete C++ source code
@@ -81,20 +97,20 @@ srand(time(0));
 
 ## Test Results
 ✅ Program compiles successfully with g++  
-✅ Handles user input validation  
-✅ Correctly implements best-of-3 logic  
-✅ Properly calculates winnings and losses  
-✅ Manages money deposits and betting  
-✅ Provides clear game output and user feedback  
+✅ Correctly implements best-of-3 logic (first to 2 wins)  
+✅ Handles tie rounds properly (no points awarded)  
+✅ Continues game until winner determined (no early termination)  
+✅ Provides clear game output and score tracking  
+✅ Interactive gameplay with user input  
 
 ## Usage
 ```bash
 ./dice_game
 ```
 
-The program provides an interactive experience where users can:
-1. Deposit money (max 5000 SEK per deposit)
-2. Choose bet amounts (100, 300, or 500 SEK)
-3. Play dice games against the computer
-4. Track winnings and balance
-5. Play multiple games in one session
+The program provides an interactive experience where:
+1. Two players take turns rolling dice
+2. Each player presses Enter to roll their dice
+3. Higher dice value wins the round
+4. First player to win 2 rounds wins the game
+5. Game continues until someone achieves 2 round wins
